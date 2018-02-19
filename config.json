@@ -1,0 +1,13 @@
+{
+  "emails": [
+    "some-guy@airbnb.com",
+    "some-chick@airbnb.com",
+    "another-person@airbnb.com",
+  ],
+
+  "repo_paths": [
+    "~/my_repos/main-app",
+    "~/my_repos/some-data-thing",
+    "~/my_repos/support_tool",
+  ]
+}
