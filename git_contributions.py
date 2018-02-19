@@ -1,6 +1,6 @@
 import subprocess, os, json
 
-def process_each_repo(emails, repo_paths):
+def process_each_repo(emails, repo_paths, since_date_str):
   email_to_repo_path_to_output = {}
 
   for email in emails:
@@ -11,7 +11,7 @@ def process_each_repo(emails, repo_paths):
       print '  repo_path:', repo_path
       os.chdir(repo_path)
       command_list = 'bash /Users/jesse_aldridge/Dropbox/git_contributions/_git_contrib.sh'.split()
-      command_list.append(email)
+      command_list += [email, since_date_str]
       proc = subprocess.Popen(command_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
       output = proc.communicate()[0]
       email_to_repo_path_to_output[email][repo_path] = output
@@ -29,6 +29,7 @@ def main():
     email_to_repo_path_to_output = process_each_repo(
       config_dict['emails'],
       config_dict['repo_paths'],
+      config_dict['since'],
     )
   finally:
     os.chdir(starting_dir)
