@@ -18,5 +18,8 @@ for email in email_to_path_to_output:
     sum_ += added + deleted
   email_to_loc[email] = sum_
 
+mean = sum(email_to_loc.values()) / float(len(email_to_loc))
+print 'mean:', round(mean)
+
 for email, loc in sorted(email_to_loc.iteritems(), key=lambda t: -t[1]):
-  print email, loc
+  print '{:<40} {:<5} {:.2}'.format(email, loc, loc / mean)
