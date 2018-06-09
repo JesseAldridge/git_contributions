@@ -1,25 +1,20 @@
 import json, re, os
 
+with open('config.json') as f:
+  json_str = f.read()
+config = json.loads(json_str)
+
 with open('out.json') as f:
   json_str = f.read()
 
 email_to_path_to_output = json.loads(json_str)
-email_to_loc = {}
-
-for email in email_to_path_to_output:
-  path_to_output = email_to_path_to_output[email]
-  sum_ = 0
-  for path, output in path_to_output.iteritems():
-    counts = re.findall(': ([0-9]*?),|\n', output)
-    if not counts:
-      continue
-    counts = [(int(s) if s else 0) for s in counts]
-    added, deleted, _ = counts
-    sum_ += added + deleted
-  email_to_loc[email] = sum_
+email_to_loc = {
+  email: sum(email_to_path_to_output[email].values()) for email in email_to_path_to_output
+}
 
 mean = sum(email_to_loc.values()) / float(len(email_to_loc))
 print 'mean:', round(mean)
 
+print 'lines of code added + deleted across all repos since {}'.format(config['since'])
 for email, loc in sorted(email_to_loc.iteritems(), key=lambda t: -t[1]):
   print '{:<40} {:<5} {:.2}'.format(email, loc, loc / mean)
