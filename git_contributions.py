@@ -11,7 +11,7 @@ def process_each_repo(emails, repo_paths, since_date_str):
       repo_path = os.path.expanduser(repo_path)
       print '  repo_path:', repo_path
       os.chdir(repo_path)
-      commits = process_repo(repo_path, email)
+      commits = process_repo(repo_path, email, since_date_str)
       commits.sort(key=lambda commit: commit.added + commit.removed)
       normal_commits = commits[:int(len(commits) * .8)]
       locs = [commit.added + commit.removed for commit in normal_commits]
@@ -19,7 +19,7 @@ def process_each_repo(emails, repo_paths, since_date_str):
 
   return email_to_repo_path_to_output
 
-def process_repo(repo_path, email):
+def process_repo(repo_path, email, since_date_str):
   class Commit:
     def __init__(self):
       self.added = 0
@@ -29,7 +29,9 @@ def process_repo(repo_path, email):
       return '({}, {})'.format(self.added, self.removed)
 
   os.chdir(repo_path)
-  cmd_arr = ['git', 'log', '--author={}'.format(email), '--since=2017-01-01', '--numstat']
+  cmd_arr = [
+    'git', 'log', '--author={}'.format(email), '--since={}'.format(since_date_str), '--numstat'
+  ]
   proc = subprocess.Popen(cmd_arr, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
   output = proc.communicate()[0]
 
